@@ -21,6 +21,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/Message'
           description: ''
+  /api/feedback/:
+    post:
+      summary: Send feedback message
+      description: Submit contact form. No authentication required. No data persistence.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackPayload'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
 components:
   schemas:
     Message:
@@ -36,6 +60,27 @@ components:
       required:
       - message
       - timestamp
+    FeedbackPayload:
+      type: object
+      required: [name, email, message]
+      properties:
+        name:
+          type: string
+          maxLength: 120
+        email:
+          type: string
+          format: email
+        message:
+          type: string
+          maxLength: 2000
+        consent:
+          type: boolean
+          default: false
+    FeedbackResponse:
+      type: object
+      properties:
+        detail:
+          type: string
   securitySchemes:
     basicAuth:
       type: http
