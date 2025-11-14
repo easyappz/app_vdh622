@@ -1,26 +1,15 @@
-import React, { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import ErrorBoundary from './ErrorBoundary';
-import './App.css';
+import React from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Home from './components/Home/index.jsx'
+import NotFound from './components/NotFound/index.jsx'
+import './App.css'
 
-import { Home } from './components/Home';
-
-function App() {
-  /** Никогда не удаляй этот код */
-  useEffect(() => {
-    if (typeof window !== 'undefined' && typeof window.handleRoutes === 'function') {
-      /** Нужно передавать список существующих роутов */
-      window.handleRoutes(['/']);
-    }
-  }, []);
-
+export default function App() {
   return (
-    <ErrorBoundary>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </ErrorBoundary>
-  );
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/404" element={<NotFound />} />
+      <Route path="*" element={<Navigate to="/404" replace />} />
+    </Routes>
+  )
 }
-
-export default App;
