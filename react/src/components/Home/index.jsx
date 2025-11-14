@@ -7,6 +7,7 @@ import ContactInfo from '../Landing/ContactInfo.jsx'
 import Socials from '../Landing/Socials.jsx'
 import FeedbackForm from '../Landing/FeedbackForm.jsx'
 import Footer from '../Footer/index.jsx'
+import { sendFeedback } from '../../api/feedback.js'
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
       <Benefits />
       <ContactInfo />
       <Socials />
-      <FeedbackForm />
+      <FeedbackForm onSubmit={sendFeedback} />
       <Footer />
     </div>
   )

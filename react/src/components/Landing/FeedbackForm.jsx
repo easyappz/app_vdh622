@@ -28,9 +28,20 @@ export default function FeedbackForm({ onSubmit }) {
       await onSubmit(form)
       setStatus('success')
       setForm({ name: '', email: '', message: '', consent: false })
+      setErrors({})
     } catch (err) {
       setStatus('error')
-      setServerError(err?.message || 'Ошибка отправки')
+      const data = err?.response?.data
+      if (data && typeof data === 'object') {
+        const fieldErrors = {}
+        for (const k of Object.keys(data)) {
+          fieldErrors[k] = Array.isArray(data[k]) ? data[k].join(', ') : String(data[k])
+        }
+        setErrors(fieldErrors)
+        setServerError('Проверьте правильность данных')
+      } else {
+        setServerError(err?.message || 'Ошибка отправки')
+      }
     }
   }
 
@@ -61,6 +72,7 @@ export default function FeedbackForm({ onSubmit }) {
               <input type="checkbox" checked={form.consent} onChange={e => handleChange('consent', e.target.checked)} />
               <span style={{ color: 'var(--muted)' }}>Я согласен(на) на обработку персональных данных</span>
             </label>
+            {errors.consent && <div style={{ color: '#c00', fontSize: 12, marginTop: 6 }}>{errors.consent}</div>}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 16 }}>
               <button type="submit" className="btn" disabled={status==='loading'}>{status==='loading' ? 'Отправка…' : 'Отправить'}</button>
               {status==='success' && <span style={{ color: 'green' }}>Сообщение отправлено!</span>}
