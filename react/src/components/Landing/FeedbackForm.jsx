@@ -6,11 +6,24 @@ export default function FeedbackForm({ onSubmit }) {
   const [status, setStatus] = useState('idle') // idle | loading | success | error
   const [serverError, setServerError] = useState('')
 
+  const isValidEmail = (value) => {
+    const v = String(value || '').trim()
+    if (!v) return false
+    const parts = v.split('@')
+    if (parts.length !== 2) return false
+    const [local, domain] = parts
+    if (!local || !domain) return false
+    if (local.includes(' ') || domain.includes(' ')) return false
+    if (domain.startsWith('.') || domain.endsWith('.')) return false
+    if (!domain.includes('.')) return false
+    return true
+  }
+
   const validate = () => {
     const e = {}
     if (!form.name.trim()) e.name = 'Укажите имя'
     if (!form.email.trim()) e.email = 'Укажите email'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Некорректный email'
+    else if (!isValidEmail(form.email)) e.email = 'Некорректный email'
     if (!form.message.trim()) e.message = 'Напишите сообщение'
     setErrors(e)
     return Object.keys(e).length === 0
